@@ -1,0 +1,41 @@
+census_df = pd.read_csv('census.csv')
+census_df.head()
+
+#Q1: Which state has the least counties in it?
+def answer_one():
+    df_filtered = census_df[census_df['SUMLEV'] == 50]
+    state_df = pd.DataFrame()
+    state_df['State'] = df_filtered['STNAME'].unique()
+    state_df['CountyCnt'] = 0
+    state_df.set_index('State',inplace=True)
+    df_filtered = df_filtered.set_index('STNAME')
+    for st in state_df.index:
+        stcount=sum(df_filtered.index == st)
+        state_df['CountyCnt'].loc[st] = stcount
+    return state_df['CountyCnt'].idxmin()
+answer_one()
+
+#Q2:Only looking at the three least populous counties for each state, what are the three least populous states?
+def answer_two():
+    df_filtered = census_df[census_df['SUMLEV'] == 50]
+    states = df_filtered.groupby('STNAME')['CENSUS2010POP'].apply(lambda x: x.nsmallest(3).sum())
+    return states.nsmallest(3).index.values.tolist()
+answer_two()
+
+#Q3: Which county has had the smallest absolute change in population within the period 2010-2015? 
+def answer_three():
+    df_filtered = census_df[census_df['SUMLEV'] == 50]
+    df_part=df_filtered.loc[:,'POPESTIMATE2010':'POPESTIMATE2015']
+    diff= abs(df_part.max(axis=1) - df_part.min(axis=1))
+    df_filtered['Difference']=diff
+    df_filtered = df_filtered.set_index('CTYNAME')
+    return df_filtered['Difference'].idxmin()
+answer_three()
+
+#Q4: Create a query that finds the counties that belong to regions 1 or 2, whose name starts with 'Washington', and whose POPESTIMATE2015 was smaller than their POPESTIMATE 2014.
+def answer_four():
+    df_filtered = census_df[census_df['SUMLEV'] == 50]
+    df1 = df_filtered[(df_filtered['REGION'].isin([1,2])) & (df_filtered['POPESTIMATE2015']<df_filtered['POPESTIMATE2014'])
+                 &df_filtered['CTYNAME'].str.startswith('Washington')]
+    return df1[['STNAME','CTYNAME']]
+answer_four()
