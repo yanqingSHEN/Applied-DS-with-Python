@@ -1,3 +1,3 @@
 # Applied-DS-with-Python
-These are the codes I wrote about the 'Applied DS with Python'. 
-Welcome all discussions on improvements.
+These are the codes I wrote for the 'Applied DS with Python' course. To abide by honor code, I make some changes to the original questions. Welcome all suggestions for improvements.
+
