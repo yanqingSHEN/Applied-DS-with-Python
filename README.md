@@ -1,3 +1,3 @@
 # Applied-DS-with-Python
-These are the codes I wrote for the assignments on Coursera 'Applied DS with Python'. I further hone my Python skills through this course.
+These are the codes I wrote about the 'Applied DS with Python'. 
 Welcome all discussions on improvements.
