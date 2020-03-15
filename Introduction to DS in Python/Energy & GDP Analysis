@@ -1,0 +1,117 @@
+#Q1. Load the energy data from the file Energy Indicators.xls and clean data. Next, load the GDP data from the file world_bank.csv.
+#    Finally, load the Sciamgo Journal and Country Rank data for Energy Engineering and Power Technology from the file scimagojr-3.xlsx
+import pandas as pd
+from pandas import ExcelWriter
+from pandas import ExcelFile
+import numpy as np
+
+def answer_one():
+    energy = pd.read_excel('Energy Indicators.xls', sheetname='Energy',skiprows=16,skipfooter=38)
+    energy = energy.drop([energy.columns[0],energy.columns[1]],axis='columns')
+    energy = energy.drop(0,axis=0)
+    energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
+    energy = energy.replace('...', np.nan)
+    energy['Energy Supply']=energy['Energy Supply']*1000000
+    energy['Country'] = energy['Country'].str.replace('\d+', '')
+    energy['Country'] = energy['Country'].str.replace(r"\(.*\)","")
+    energy['Country'].replace({'Republic of Korea': 'South Korea',
+                                'United States of America': 'United States',
+                                'United Kingdom of Great Britain and Northern Ireland': 'United Kingdom',
+                                'China, Hong Kong Special Administrative Region': 'Hong Kong'},inplace=True)
+    energy = energy.reset_index()
+    energy.drop('index',axis='columns',inplace=True)
+    energy['Country'].replace('Iran ', 'Iran',inplace=True)
+    GDP = pd.read_csv('world_bank.csv',skiprows=4) 
+    GDP['Country Name'].replace({'Korea, Rep.':'South Korea',
+                                 'Iran, Islamic Rep.': 'Iran',
+                                 'Hong Kong SAR, China': 'Hong Kong'},inplace=True)
+    GDP.drop(GDP.columns[1:50],axis='columns',inplace=True)
+    GDP.rename(columns={'Country Name':'Country'},inplace=True)
+    ScimEn = pd.read_excel('scimagojr-3.xlsx')
+    test = pd.merge(ScimEn,energy,how='inner',left_on='Country',right_on='Country')
+    df = pd.merge(test,GDP,how='inner',left_on='Country',right_on='Country')
+    df = df.set_index('Country')
+    df = df.iloc[0:15]
+    return df
+
+answer_one()
+
+# Q2. What is the average GDP over the last 5 years for each country?
+def answer_two():
+    Top15 = answer_one()
+    rows = ['2011','2012','2013','2014','2015']
+    series= Top15.apply(lambda x: np.mean(x[rows]), axis=1).rename('avgGDP').sort_values(ascending=False)
+    return series
+answer_two()
+
+# Q3. By how much had the GDP changed over the 5 year span for the country with the 4th largest average GDP?
+def answer_three():
+    Top15 = answer_one()
+    Top15 = answer_one()
+    row = Top15.loc[answer_two().index[3]]
+    change = row['2015']-row['2011']
+    return change
+answer_four()
+
+# Q4. What is the mean Energy Supply per Capita?
+def answer_four():
+    Top15 = answer_one()
+    avg=Top15['Energy Supply per Capita'].mean()
+    return avg
+answer_four()
+
+# Q5. What country has the minimum % Renewable and what is the percentage?
+def answer_five():
+    Top15 = answer_one()
+    s=Top15['% Renewable'].sort_values(ascending=False)
+    answer = tuple(zip(s.index,s))[14]
+    return answer
+answer_five()
+
+# Q6. Create a new column that is the ratio of Self-Citations to Total Citations. 
+#     What is the min value for this new column, and what country has the lowest ratio?
+def answer_six():
+    Top15 = answer_one()
+    Top15['ratio'] = Top15['Self-citations']/Top15['Citations']
+    s = Top15['ratio'].sort_values(ascending=False)
+    answer = tuple(zip(s.index,s))[14]
+    return answer
+answer_six()
+
+# Q7. Create a column that estimates the population using Energy Supply and Energy Supply per capita. 
+#     What is the most populous country according to this estimate?
+def answer_seven():
+    Top15 = answer_one()
+    Top15['estimate'] = Top15['Energy Supply']/Top15['Energy Supply per Capita']
+    s=Top15['estimate'].sort_values(ascending=False)
+    answer = s.index[0]
+    return answer
+answer_seven()
+
+# Q8. Create a column that estimates the number of citable documents per person. 
+#     What is the correlation between the number of citable documents per capita and the energy supply per capita?
+def answer_eight():
+    Top15 = answer_one()
+    Top15['popest'] = Top15['Energy Supply']/Top15['Energy Supply per Capita']
+    Top15['Citable docs per Capita'] = Top15['Citable documents']/Top15['popest']
+    answer = Top15['Citable docs per Capita'].corr(Top15['Energy Supply per Capita'])
+    return answer
+answer_eight()
+
+# Q9. Create a new column with a 1 if the country's % Renewable value is at or above the median for all countries in the top 15, and a 0 if the country's % Renewable value is below the median.
+def answer_nine():
+    Top15 = answer_one()
+    median=Top15['% Renewable'].median()
+    Top15['dummy'] = np.where(Top15['% Renewable']>=median,1, 0)
+    data = np.array(Top15['dummy'])
+    ser = pd.Series(data, index =Top15.index).rename('HighRenew')
+    return ser
+answer_nine()
+
+# Q10. Convert the Population Estimate series to a string with thousands separator (using commas). Do not round the results.
+def answer_ten():
+    Top15 = answer_one()
+    Top15['popest'] = Top15['Energy Supply']/Top15['Energy Supply per Capita']
+    answer = Top15['popest'].apply('{:,}'.format)
+    return answer
+answer_ten()
