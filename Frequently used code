@@ -1,1 +1,16 @@
-
+## read a file
+  import pandas as pd
+  
+  # csv: set index and skip header
+  df = pd.read_csv('file.csv', index_col=0, skiprows=1)
+  
+  # excel: skip header and footer
+  from pandas import ExcelWriter
+  from pandas import ExcelFile
+  df = pd.read_excel('file.xls', sheetname='sheet x',skiprows=1,skipfooter=1)
+  
+  # txt
+  df = pd.read_csv('file.txt', sep="/", names=['xyz'])
+  
+  # json
+  df = open("file.json","r")
