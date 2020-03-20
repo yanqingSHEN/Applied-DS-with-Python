@@ -14,3 +14,18 @@
   
   # json
   df = open("file.json","r")
+  
+## slicing
+  # iloc
+  df.iloc[index] # return a row 
+  df.iloc[index1:index2] #return a range of row
+  df.iloc[:,index] #return a column
+  df.iloc[:,index1:index2] #return a range of column
+  
+  # loc
+  # similar to iloc, but put column/row names instead of index
+  
+  # filter
+  df_filtered = df[df['column' == x]] #get the row that satisfy certain column requirements 
+   
+  
