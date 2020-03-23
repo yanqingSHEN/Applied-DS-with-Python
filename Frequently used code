@@ -7,7 +7,7 @@
   # excel: skip header and footer
   from pandas import ExcelWriter
   from pandas import ExcelFile
-  df = pd.read_excel('file.xls', sheetname='sheet x',skiprows=1,skipfooter=1)
+  df = pd.read_excel('file.xls', sheet_name='sheet x',skiprows=1,skipfooter=1)
   
   # txt
   df = pd.read_csv('file.txt', sep="/", names=['xyz'])
