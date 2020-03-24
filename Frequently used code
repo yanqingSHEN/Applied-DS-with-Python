@@ -14,6 +14,10 @@
   
   # json
   df = open("file.json","r")
+
+## data type
+  # time
+  date.dt.year/month/quarter  #get different part in a specific date
   
 ## slicing
   # iloc
