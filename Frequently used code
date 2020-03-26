@@ -18,6 +18,7 @@
 ## data type
   # time
   date.dt.year/month/quarter  #get different part in a specific date
+  df['Date'].map(lambda x: x.year)
   
 ## slicing
   # iloc
@@ -37,5 +38,7 @@
   df.fillna(method ='pad')  #fill with the previous one
   df.fillna(method ='bfill') #fill with the later one
   data["x"].fillna("y", inplace = True) #replace all the null value in column x with value y
+  
+ 
    
   
