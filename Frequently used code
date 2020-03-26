@@ -31,5 +31,11 @@
   
   # filter
   df_filtered = df[df['column' == x]] #get the row that satisfy certain column requirements 
+  
+## dealing with missing data
+  df.fillna(0)
+  df.fillna(method ='pad')  #fill with the previous one
+  df.fillna(method ='bfill') #fill with the later one
+  data["x"].fillna("y", inplace = True) #replace all the null value in column x with value y
    
   
