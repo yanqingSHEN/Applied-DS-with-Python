@@ -39,6 +39,22 @@
   df.fillna(method ='bfill') #fill with the later one
   data["x"].fillna("y", inplace = True) #replace all the null value in column x with value y
   
- 
+## data visualization
+  # set axis property
+  ax.axis([xmin,xmax,ymin,ymax])
+  
+  # get current axes
+  ax = plt.gca()
+  
+  # set names
+  plt.xlabel('xlabel')
+  plt.ylabel('ylabel')
+  plt.title('title')
+  plt.legend(['a','b','c'])
+  
+  # rotate the tick labels for the x axis
+  x = plt.gca().xaxis
+  for item in x.get_ticklabels():
+      item.set_rotation(45)
    
   
